@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quench and Gulp</title>
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+  
+  <meta name="color-scheme" content="light dark"/>
+  
+  <link rel="shortcut icon" href="img/droplet-solid.svg" type="image/x-icon" media="(prefers-color-scheme: light)">
+  <link rel="shortcut icon" href="img/droplet-solid-white.svg" type="image/x-icon" media="(prefers-color-scheme: dark)">
+
+</head>
+<body>
+
+<div class="container">
+    <h1><i class="fa-solid fa-droplet"></i> Quench and Gulp</h1>
+
+    <div class="input-group">
+        <select id="waterAmount">
+            <option value="4">4 oz</option>
+            <option value="8">8 oz</option>
+            <option value="16">16 oz</option>
+            <option value="32">32 oz</option>
+            <option value="custom">Custom</option>
+        </select>
+        <input type="text" id="customAmount" placeholder="Enter custom amount (oz)" style="display: none;" inputmode="numeric" pattern="[0-9]*" oninput="validateInput(event)" onkeydown="handleEnterKey(event)">
+        <button onclick="addWaterIntake()"><i class="fa-solid fa-plus"></i></button>
+    </div>
+
+    <div class="history-container" id="historyContainer" style="display: none;">
+        <div class="history">
+            <h2>History</h2>
+            <ul id="intakeHistory"></ul>
+        </div>
+    
+        <div class="clear-history">
+            <button onclick="fetchIntakeHistory()"><i class="fa-solid fa-arrows-rotate"></i></button>
+            <button onclick="clearHistory()"><i class="fa-solid fa-trash"></i></button>
+        </div>
+    </div>
+    
+</div>
+
+    
+</body>
+<script src="js/intake.js"></script>
+</html>
