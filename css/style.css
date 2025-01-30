@@ -37,7 +37,7 @@
         max-width: max-content;
     }
 
-    select {
+    select  {
         cursor: pointer;
     }
 
