@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const waterAmountSelect = document.getElementById("waterAmount");
     const customAmountInput = document.getElementById("customAmount");
+    const drinkTypeSelect = document.getElementById("drinkType");
+    const customDrinkInput = document.getElementById("customDrink");
 
     // Show input box if "Custom" is selected, hide otherwise
     waterAmountSelect.addEventListener("change", function () {
@@ -12,6 +14,15 @@ document.addEventListener("DOMContentLoaded", function () {
             customAmountInput.focus();
         } else {
             customAmountInput.style.display = "none";
+        }
+    });
+
+    drinkTypeSelect.addEventListener("change", function () {
+        if (this.value === "custom") {
+            customDrinkInput.style.display = "block";
+            customDrinkInput.focus();
+        } else {
+            customDrinkInput.style.display = "none";
         }
     });
 });
@@ -40,22 +51,33 @@ function setupDatabase() {
 function addWaterIntake() {
     let amount = document.getElementById("waterAmount").value;
     const customAmount = document.getElementById("customAmount").value;
+    let drinkType = document.getElementById("drinkType").value;
+    const customDrink = document.getElementById("customDrink").value;
 
     if (amount === "custom") {
         amount = customAmount;
     }
 
+    if (drinkType === "custom") {
+        drinkType = customDrink;
+    }
+
     amount = parseFloat(amount);
 
     if (!amount || amount <= 0) {
-        alert("Please enter a valid water amount.");
+        alert("Please enter a valid amount.");
         return;
     }
 
-    addIntake(amount);
+    if (!drinkType) {
+        alert("Please enter a drink type.");
+        return;
+    }
+
+    addIntake(amount, drinkType);
 }
 
-function addIntake(amount) {
+function addIntake(amount, drinkType) {
     const request = indexedDB.open("WaterIntakeDB", 1);
 
     request.onsuccess = function (event) {
@@ -67,11 +89,12 @@ function addIntake(amount) {
         const intakeRecord = {
             date: now.toISOString().split("T")[0], // YYYY-MM-DD
             time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true }), // HH:MM AM/PM
-            amount: amount
+            amount: amount,
+            drinkType: drinkType
         };
 
         store.add(intakeRecord).onsuccess = function () {
-            console.log("Water intake recorded:", intakeRecord);
+            console.log("Intake recorded:", intakeRecord);
             fetchIntakeHistory(); // Refresh history after adding
         };
     };
@@ -92,7 +115,7 @@ function fetchIntakeHistory() {
 
             dataRequest.result.forEach(record => {
                 const listItem = document.createElement("li");
-                listItem.textContent = `${record.date} at ${record.time}: ${record.amount} oz`;
+                listItem.textContent = `${record.date} at ${record.time}: ${record.amount} oz of ${record.drinkType}`;
                 historyList.appendChild(listItem);
             });
 
@@ -113,13 +136,12 @@ function clearHistory() {
         const store = transaction.objectStore("intake");
 
         store.clear().onsuccess = function () {
-            console.log("Water intake history cleared.");
+            console.log("Intake history cleared.");
             document.getElementById("intakeHistory").innerHTML = "";
             document.getElementById("historyContainer").style.display = "none"; // Hide the history container
         };
     };
 }
-
 
 function validateInput(event) {
     // Allow only numbers (prevent anything that's not a digit)
